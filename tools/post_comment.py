@@ -24,6 +24,5 @@ def post_pr_comment(owner: str, repo: str, pr_number: int, comment: str) -> str:
         active_branch=active_branch,
         github_base_branch=base_branch,
     )
-    api_wrapper.get_pull_request(pr_number)
     resp = api_wrapper.comment_on_issue(formatted_req)
     return resp
