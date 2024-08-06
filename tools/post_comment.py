@@ -1,28 +1,26 @@
 import os
+from typing import Optional, Type, Any
 
-from langchain_community.utilities.github import GitHubAPIWrapper
-from langchain_core.tools import tool
+from langchain_core.callbacks import CallbackManagerForToolRun
+from langchain_core.tools import tool, BaseTool
 
 from models.github_models import PostCommentInput
+from langchain.pydantic_v1 import BaseModel
 
 
-@tool(args_schema=PostCommentInput)
-def post_pr_comment(owner: str, repo: str, pr_number: int, comment: str) -> str:
-    """Post a comment on a GitHub pull request"""
+class PostCommentTool(BaseTool):
+    name: str = "post_pr_comment"
+    description: str = "Post a comment on a GitHub pull request"
+    args_schema: Type[BaseModel] = PostCommentInput
 
-    app_id = os.environ["GITHUB_APP_ID"]
-    private_key = os.environ["GITHUB_APP_PRIVATE_KEY"]
-    base_branch = os.environ.get("GITHUB_BASE_BRANCH")
-    active_branch = os.environ.get("GITHUB_BRANCH")
-
-    formatted_req = f"{pr_number}\n\n{comment}"
-
-    api_wrapper = GitHubAPIWrapper(
-        github_repository=f"{owner}/{repo}",
-        github_app_id=app_id,
-        github_app_private_key=private_key,
-        active_branch=active_branch,
-        github_base_branch=base_branch,
-    )
-    resp = api_wrapper.comment_on_issue(formatted_req)
-    return resp
+    def _run(
+        self,
+        owner: str,
+        repo: str,
+        pr_number: int,
+        comment: str,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
+    ) -> str:
+        formatted_req = f"{pr_number}\n\n{comment}"
+        resp = self.metadata.get("github_client").comment_onissue(formatted_req)
+        return resp
