@@ -8,7 +8,6 @@ langchain = "*"
 langchain-openai = "*"
 python-dotenv = "*"
 black = "*"
-pygithub = "*"
 langchain-community = "*"
 
 [dev-packages]
