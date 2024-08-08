@@ -1,8 +1,6 @@
 import os
 from langchain_community.utilities.github import GitHubAPIWrapper
 
-from models.github_models import PRInfo
-
 
 class CustomGitHubAPIClient(GitHubAPIWrapper):
     def get_pr_diff(self, pr_number: int) -> str:

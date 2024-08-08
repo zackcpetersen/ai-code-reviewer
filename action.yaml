@@ -1,0 +1,41 @@
+name: 'Code Review Action'
+description: 'Runs an AI powered code review on a pull request'
+inputs:
+  openai_api_key:
+    description: 'The OpenAI API key'
+    required: true
+  langchain_tracing_v2:
+    description: 'Boolean to enable LangSmith tracing, if true, LANGCHAIN_API_KEY and LANGCHAIN_PROJECT are required'
+    required: false
+  langchain_api_key:
+    description: 'LangChain API key for tracing'
+    required: false
+  langchain_project:
+    description: 'LangChain project to associate with tracing'
+    required: false
+  github_repo_owner:
+    description: 'The owner of the repository'
+    required: true
+  github_repo_name:
+    description: 'The repository name'
+    required: true
+  github_pr_number:
+    description: 'The pull request number'
+    required: true
+  github_base_branch:
+    description: 'The base branch of the pull request'
+    required: true
+    default: main
+  github_active_branch:
+    description: 'The active branch of the pull request'
+    required: true
+  github_app_id:
+    description: 'The GitHub App ID'
+    required: true
+  github_app_private_key:
+    description: 'The GitHub App private key'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  entrypoint: '/app/entrypoint.sh'
