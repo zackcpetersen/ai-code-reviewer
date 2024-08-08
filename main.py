@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 from typing import Dict
 
@@ -13,12 +14,11 @@ from wrappers.custom_github_api_wrapper import create_github_client
 load_dotenv()
 
 
-def run_code_review_agent(pr_link: str) -> Dict[str, any]:
+def run_code_review_agent(pri: PRInfo) -> Dict[str, any]:
     try:
         # Get the PR diff
-        pr_info = parse_pr_link(pr_link)
-        ghc = create_github_client(pr_info.owner, pr_info.repo)
-        diff = ghc.get_pr_diff(pr_info.pr_number)
+        ghc = create_github_client(pri.owner, pri.repo)
+        diff = ghc.get_pr_diff(pri.pr_number)
 
         # Set up the prompt
         prompt = ChatPromptTemplate.from_messages(
@@ -40,7 +40,7 @@ def run_code_review_agent(pr_link: str) -> Dict[str, any]:
 
         # Prepare the input for the agent
         input_data = {
-            "pr_info": pr_info.json(),
+            "pr_info": pri.json(),
             "diff": diff,
         }
 
@@ -48,18 +48,20 @@ def run_code_review_agent(pr_link: str) -> Dict[str, any]:
         result = agent_executor.invoke(input_data)
         return result
     except Exception as e:
-        return {"error": f"An error occurred: {str(e)}"}
+        return {"output": f"An error occurred: {str(e)}"}
 
 
-def parse_pr_link(pull_request: str) -> PRInfo:
-    # This is a simple implementation and may need to be more robust
-    parts = pull_request.split("/")
-    owner = parts[-4]
-    repo = parts[-3]
-    pr_number = int(parts[-1])
+def validate_params() -> PRInfo:
+    owner = os.environ['GITHUB_REPOSITORY_OWNER']
+    repo = os.environ['GITHUB_REPOSITORY']
+    pr_number = int(os.environ['GITHUB_EVENT_PULL_REQUEST_NUMBER'])
+
     return PRInfo(owner=owner, repo=repo, pr_number=pr_number)
 
 
 if __name__ == "__main__":
     res = run_code_review_agent("https://github.com/zackcpetersen/portfolio/pull/10")
     print(res)
+    pr_info = validate_params()
+    res = run_code_review_agent(pr_info)
+    print(res.get("output"))
