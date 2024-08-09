@@ -9,3 +9,10 @@ class PRInfo(BaseModel):
 
 class PostCommentInput(PRInfo):
     comment: str = Field(description="Comment to post on the pull request")
+
+
+class GitHubClientCreds(BaseModel):
+    app_id: str = Field(description="The GitHub App ID")
+    private_key: str = Field(description="The private key for the GitHub App")
+    base_branch: str = Field(description="The base branch for the PR")
+    active_branch: str = Field(description="The active branch for the PR")
