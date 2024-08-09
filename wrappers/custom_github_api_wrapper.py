@@ -1,5 +1,5 @@
-import os
 from langchain_community.utilities.github import GitHubAPIWrapper
+from models.github_models import PRInfo, GitHubClientCreds
 
 
 class CustomGitHubAPIClient(GitHubAPIWrapper):
@@ -11,7 +11,6 @@ class CustomGitHubAPIClient(GitHubAPIWrapper):
             [f"File: {file.filename}\nChanges:\n{file.patch}" for file in files]
         )
         # Remove curly braces to avoid issues with f-strings
-        diff = diff.replace("{", "{{").replace("}", "}}")
         return diff
 
     def comment_onissue(self, comment_query: str) -> str:
@@ -25,17 +24,15 @@ class CustomGitHubAPIClient(GitHubAPIWrapper):
         return self.comment_on_issue(comment_query)
 
 
-def create_github_client(owner: str, repo: str) -> CustomGitHubAPIClient:
-    app_id = os.environ["INPUT_GITHUB_APP_ID"]
-    private_key = os.environ["INPUT_GITHUB_APP_PRIVATE_KEY"]
-    base_branch = os.environ.get("INPUT_GITHUB_BASE_BRANCH")
-    active_branch = os.environ.get("INPUT_GITHUB_ACTIVE_BRANCH")
+def create_github_client(
+    pr_info: PRInfo, client_info: GitHubClientCreds
+) -> CustomGitHubAPIClient:
     wrapped = CustomGitHubAPIClient(
-        github_repository=f"{owner}/{repo}",
-        github_app_id=app_id,
-        github_app_private_key=private_key,
-        active_branch=active_branch,
-        github_base_branch=base_branch,
+        github_repository=f"{pr_info.owner}/{pr_info.repo}",
+        github_app_id=client_info.app_id,
+        github_app_private_key=client_info.private_key,
+        active_branch=client_info.active_branch,
+        github_base_branch=client_info.base_branch,
     )
 
     return wrapped

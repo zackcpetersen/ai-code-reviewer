@@ -1,11 +1,8 @@
 name: 'Code Review Action'
 description: 'Runs an AI powered code review on a pull request'
 inputs:
-  github_repo_owner:
-    description: 'The owner of the repository'
-    required: true
-  github_repo_name:
-    description: 'The repository name'
+  github_repo:
+    description: 'The github repo, in the format owner/repo'
     required: true
   github_pr_number:
     description: 'The pull request number'
