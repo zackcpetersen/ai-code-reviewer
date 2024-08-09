@@ -52,9 +52,9 @@ def run_code_review_agent(pri: PRInfo) -> Dict[str, any]:
 
 
 def validate_params() -> PRInfo:
-    owner = os.environ['INPUT_GITHUB_REPOSITORY_OWNER']
-    repo = os.environ['INPUT_GITHUB_REPOSITORY']
-    pr_number = int(os.environ['INPUT_GITHUB_EVENT_PULL_REQUEST_NUMBER'])
+    owner = os.environ['INPUT_GITHUB_REPO_OWNER']
+    repo = os.environ['INPUT_GITHUB_REPO_NAME']
+    pr_number = int(os.environ['INPUT_GITHUB_PR_NUMBER'])
 
     return PRInfo(owner=owner, repo=repo, pr_number=pr_number)
 
