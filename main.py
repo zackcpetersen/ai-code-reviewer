@@ -52,16 +52,14 @@ def run_code_review_agent(pri: PRInfo) -> Dict[str, any]:
 
 
 def validate_params() -> PRInfo:
-    owner = os.environ['GITHUB_REPOSITORY_OWNER']
-    repo = os.environ['GITHUB_REPOSITORY']
-    pr_number = int(os.environ['GITHUB_EVENT_PULL_REQUEST_NUMBER'])
+    owner = os.environ['INPUT_GITHUB_REPOSITORY_OWNER']
+    repo = os.environ['INPUT_GITHUB_REPOSITORY']
+    pr_number = int(os.environ['INPUT_GITHUB_EVENT_PULL_REQUEST_NUMBER'])
 
     return PRInfo(owner=owner, repo=repo, pr_number=pr_number)
 
 
 if __name__ == "__main__":
-    res = run_code_review_agent("https://github.com/zackcpetersen/portfolio/pull/10")
-    print(res)
     pr_info = validate_params()
     res = run_code_review_agent(pr_info)
     print(res.get("output"))
