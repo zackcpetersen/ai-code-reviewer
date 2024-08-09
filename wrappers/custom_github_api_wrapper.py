@@ -29,7 +29,7 @@ def create_github_client(owner: str, repo: str) -> CustomGitHubAPIClient:
     app_id = os.environ["INPUT_GITHUB_APP_ID"]
     private_key = os.environ["INPUT_GITHUB_APP_PRIVATE_KEY"]
     base_branch = os.environ.get("INPUT_GITHUB_BASE_BRANCH")
-    active_branch = os.environ.get("INPUT_GITHUB_BRANCH")
+    active_branch = os.environ.get("INPUT_GITHUB_ACTIVE_BRANCH")
     wrapped = CustomGitHubAPIClient(
         github_repository=f"{owner}/{repo}",
         github_app_id=app_id,
